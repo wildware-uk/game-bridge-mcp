@@ -1,0 +1,62 @@
+{
+  "name": "@wildware/game-bridge-mcp",
+  "version": "0.1.0",
+  "description": "Port-addressable MCP bridge for driving running games over a debug HTTP surface: launches instances and picks their ports, discovers each game's own tool list at runtime, and drives many instances at once.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "game-development",
+    "gamedev",
+    "libgdx",
+    "testing",
+    "agents",
+    "debug-bridge"
+  ],
+  "license": "MIT",
+  "author": "Wildware",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wildware-uk/game-bridge-mcp.git"
+  },
+  "homepage": "https://github.com/wildware-uk/game-bridge-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/wildware-uk/game-bridge-mcp/issues"
+  },
+  "type": "module",
+  "bin": {
+    "game-bridge-mcp": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run build && npm test",
+    "test": "npm run build && node --test \"test/**/*.test.js\"",
+    "start": "node dist/cli.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
