@@ -1,0 +1,89 @@
+{
+  "$comment": "What GET /tools should return. This is a fictional game; the point is the shape. Group toolsets by what a caller is trying to do, and write descriptions for the agent that will read them.",
+  "game": {
+    "name": "Orbital Freight",
+    "version": "0.9.2",
+    "protocol": 1
+  },
+  "toolsets": [
+    {
+      "name": "play",
+      "description": "Drive the game the way a player does: aim, release, and push raw input through the real input processor.",
+      "tools": [
+        {
+          "name": "aim",
+          "description": "Pin the held crate at a world x without releasing it. Until this is called the crate follows the real mouse cursor, which makes anything built on top of it unreproducible - set it before constructing a scenario.",
+          "args": [
+            { "name": "x", "type": "number", "description": "World x, -2..2 (0 is centre)", "required": true, "default": null }
+          ]
+        },
+        {
+          "name": "drop",
+          "description": "Release the held crate, aiming first if x is given. Returns as soon as the drop is queued; the crate is still falling.",
+          "args": [
+            { "name": "x", "type": "number", "description": "World x, -2..2", "required": false, "default": null }
+          ]
+        },
+        {
+          "name": "key",
+          "description": "Push a key press through the live input processor, so it reaches whichever screen is up.",
+          "args": [
+            { "name": "name", "type": "string", "description": "Key name, e.g. ENTER, ESCAPE, LEFT", "required": false, "default": "ENTER" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "build",
+      "description": "Construct a position directly instead of playing to it.",
+      "tools": [
+        {
+          "name": "spawn",
+          "description": "Place a crate of any tier directly on the field - the way to set up a specific scenario without playing to it.",
+          "args": [
+            { "name": "tier", "type": "integer", "description": "Crate tier, 0-10", "required": true, "default": null },
+            { "name": "x", "type": "number", "description": "World x", "required": true, "default": null },
+            { "name": "y", "type": "number", "description": "World y", "required": false, "default": "1.5" }
+          ]
+        },
+        {
+          "name": "set_seed",
+          "description": "Seed the run's RNG, so a scenario replays identically.",
+          "args": [
+            { "name": "seed", "type": "integer", "description": "RNG seed", "required": true, "default": null }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "flow",
+      "description": "Move the run around: hold the simulation still, step exact frames, restart, change screen, or shut the game down.",
+      "tools": [
+        {
+          "name": "pause",
+          "description": "Freeze the simulation. Rendering continues, so state read between steps is stable and deterministic."
+        },
+        {
+          "name": "step",
+          "description": "Advance exactly N simulation frames. Pause first for determinism. The command returns when queued - use the bridge's wait_for on simFrame to wait for the frames to actually run.",
+          "args": [
+            { "name": "frames", "type": "integer", "description": "Frames to advance", "required": false, "default": "1" }
+          ]
+        },
+        {
+          "name": "restart",
+          "description": "Restart the run through the game's own restart path - the code under test for run-state leakage."
+        },
+        {
+          "name": "close",
+          "description": "Shut the game down through its own dispose path. The bridge waits for the port to go quiet rather than for a completion that cannot arrive.",
+          "sync": false
+        }
+      ]
+    }
+  ],
+  "passthrough": {
+    "description": "Any command the debug bridge accepts, passed straight through as query parameters. Use this for commands newer than this manifest.",
+    "examples": ["set_gravity { x, y }", "toggle_music", "draw_physics { on }"]
+  }
+}

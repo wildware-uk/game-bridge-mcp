@@ -1,0 +1,13 @@
+{
+  "$comment": "Copy this to your project root as gamebridge.json. The bridge walks up from its working directory to find it. {port} is substituted with the port the bridge chose - the game must actually receive it, or nothing else works.",
+  "name": "Orbital Freight",
+  "launch": {
+    "command": "./gradlew lwjgl3:run -PdebugPort={port} --console=plain",
+    "cwd": ".",
+    "portRange": "7820-7839",
+    "readyTimeoutMs": 180000,
+    "env": {
+      "ORBITAL_DEV": "1"
+    }
+  }
+}
